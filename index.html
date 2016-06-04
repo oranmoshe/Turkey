@@ -57,7 +57,7 @@ arr.push(new SoundBox( "includes/1.mp3", "", "#FDBA56"));
 arr.push(new SoundBox( "includes/2.mp3", "", "#F2D88D"));
 arr.push(new SoundBox( "includes/5.mp3", "", "#9AC095"));
 arr.push(new SoundBox( "includes/3.mp3", "", "#316A68"));
-//arr.push(new SoundBox( "mp3", "ogg", "green"));
+arr.push(new SoundBox( "includes/4.mp3", "", "green"));
 
 jQuery.each( arr, function( i, val ) {
   $("section").append('<div id=' + i + ' class=sound-box><div class=sound-box-move></div>  </div>');
@@ -74,14 +74,14 @@ jQuery.each( arr, function( i, val ) {
   });
   
   // Main Sound
-  // if(i==arr.length-1){
-  //   $('#'+(arr.length-1)).css("top",0);
-  //   this.myAudio.volume = 1;
-  //   $('#'+i).draggable({
-  //     drag: function(event, ui) { 
-  //       return false; }
-  //     });
-  // }
+  if(i==arr.length-1){
+    $('#'+(arr.length-1)).css("top",0);
+    this.myAudio.volume = 1;
+    $('#'+i).draggable({
+      drag: function(event, ui) { 
+        return false; }
+      });
+  }
 
   // Drag event
   $('#'+i).on( "drag", function( event, ui ) { 
