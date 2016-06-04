@@ -1,0 +1,142 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Turkey</title>
+   <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+  <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+   <link rel="stylesheet" type="text/css" href="includes/style.css">
+</head>
+<body>
+<section id="content">
+</section>
+<script>
+jQuery.fn.cssInt = function (prop) {
+    return parseInt(this.css(prop), 10) || 0;
+};
+
+
+class SoundBox {
+  
+  constructor(mp3, ogg,color) {
+    this.mp3 = mp3;
+    this.ogg = ogg;
+    this.location = location;
+    this.color = color;
+    SoundBox.counter++;
+    this.boxId = SoundBox.counter;
+    this.myAudio = new Audio(mp3); 
+    this.myAudio.addEventListener('ended', function() {
+        this.currentTime = 0;
+        this.play();
+    }, false);
+    this.myAudio.play();
+    this.myAudio.volume = 0.01;
+  }
+
+  get location_() {
+    return this.location;
+  }
+  get color_() {
+    return this.color;
+  }
+ get id_() {
+    return this.boxId;
+  }
+  set location_ (str) {
+   this.location = str; 
+  }
+}
+SoundBox.counter =0;
+
+var height = (window.innerHeight > 0) ? window.innerHeight : screen.height;
+var width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
+
+var arr = new Array();
+arr.push(new SoundBox( "includes/1.mp3", "", "#FDBA56"));
+arr.push(new SoundBox( "includes/2.mp3", "", "#F2D88D"));
+arr.push(new SoundBox( "includes/5.mp3", "", "#9AC095"));
+arr.push(new SoundBox( "includes/3.mp3", "", "#316A68"));
+//arr.push(new SoundBox( "mp3", "ogg", "green"));
+
+jQuery.each( arr, function( i, val ) {
+  $("section").append('<div id=' + i + ' class=sound-box><div class=sound-box-move></div>  </div>');
+  $('#'+i).css("width", width);
+  $('#'+i).css("height", height);
+  $('#'+i).css("background-color", val.color);
+  $('#'+i).css("z-index", 100-i);
+  var init =  -i*20 + height -20;
+  $('#'+i).css("top",init);
+  arr[i].location_ = init;
+  this.startLimit_ = init;
+  $('#'+i).draggable({ axis: "y" ,
+     containment: [0,0,0,height-(20*i)-20]
+  });
+  
+  // Main Sound
+  // if(i==arr.length-1){
+  //   $('#'+(arr.length-1)).css("top",0);
+  //   this.myAudio.volume = 1;
+  //   $('#'+i).draggable({
+  //     drag: function(event, ui) { 
+  //       return false; }
+  //     });
+  // }
+
+  // Drag event
+  $('#'+i).on( "drag", function( event, ui ) { 
+    //if(arr[arr.length-1].location_ >0){
+      // move up elements
+      jQuery.each( arr, function( j, val ) {
+        if(i<j  && $('#'+j).position().top >0){
+          var delta = ui.position.top - arr[i].location_;
+          var dragged = $('#'+j).position().top;
+          $('#'+j).css("top",dragged+delta);
+          arr[j].location_ = $('#'+j).position().top;
+        }
+      });
+    //}
+    arr[i].location_ = ui.position.top;
+
+    // volume 
+   volume();
+  }); 
+
+  // mouse down event
+  $('#'+i).mousedown(function() {
+    if(i==0){
+
+    }
+    if(i>0){
+      var friendHeight = $('#'+(i-1)).position().top;
+      $('#'+i).draggable({ axis: "y" ,
+         containment: [0,0,0,friendHeight-20]
+      });
+    }
+
+  });
+
+    function volume(){
+       jQuery.each( arr, function( j, val ) {
+          if(j==0){
+            arr[j].myAudio.volume = Math.abs(height-arr[j].location_)/height;
+          }
+          else{
+            arr[j].myAudio.volume = Math.abs(arr[j].location_ - arr[j-1].location_)/height;
+          }     
+       });
+      
+  }  
+
+});
+
+
+
+
+
+
+ 
+
+</script>
+</body>
+</html>
